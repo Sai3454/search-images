@@ -10,6 +10,9 @@ class App extends Component{
   state = {
     imagesList: [],
     isLoading: true,
+    itemsPerPage: 15,
+    currentPage: 1,
+    totalpages: 10,
     searchInput: "",
   }
 
@@ -28,9 +31,29 @@ class App extends Component{
     }
   }
 
+  handleNextPage = () => {
+    this.setState((prevState) => ({
+      currentPage: prevState.currentPage + 1,
+    }), () => this.getAllImages());
+  };
+
+  handlePreviousPage = () => {
+    this.setState((prevState) => ({
+      currentPage: prevState.currentPage - 1,
+    }), () => this.getAllImages());
+    
+  };
+
+  handlePageChange = (pageNum) => {
+    this.setState({
+      currentPage: pageNum,
+    }, () => this.getAllImages());
+  };
+
+
   getAllImages = async () => {
-    const {searchInput} = this.state
-    const apiUrl = `https://api.unsplash.com/photos/?client_id=R7iDpKlHA0aL3SM26DcQxl7jiHFlHe_giA3nrzexLaM&query=${searchInput}`
+    const {searchInput, itemsPerPage, currentPage} = this.state
+    const apiUrl = `https://api.unsplash.com/photos/?client_id=R7iDpKlHA0aL3SM26DcQxl7jiHFlHe_giA3nrzexLaM&query=${searchInput}&per_page=${itemsPerPage}&page=${currentPage}`
 
     const res = await fetch(apiUrl)
     const data = await res.json() 
@@ -46,7 +69,7 @@ class App extends Component{
   }
 
   render(){
-    const {searchInput, imagesList, isLoading} = this.state
+    const {searchInput, imagesList, isLoading, currentPage, totalpages} = this.state
 
 
     return(
@@ -110,6 +133,36 @@ class App extends Component{
               })}
             </ul>
             
+            </div>
+            <div className='center'>
+              <div className='images-container'>
+                <button
+                  onClick={this.handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className='key'
+                >
+                  Previous
+                </button>
+                {Array.from({ length: Math.ceil(totalpages) }).map(
+                  (value, index) => (
+                    <button
+                      key={index}
+                      onClick={() => this.handlePageChange(index + 1)}
+                      disabled={currentPage === index + 1}
+                      className='key'
+                    >
+                      {index + 1}
+                    </button>
+                  )
+                )}
+                <button
+                  onClick={this.handleNextPage}
+                  disabled={currentPage === Math.ceil(totalpages)}
+                  className='key'
+                >
+                  Next
+                </button>
+              </div>
             </div>
           
       </div>

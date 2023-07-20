@@ -1,4 +1,5 @@
 import {Component} from 'react'
+import { ShimmerUIThumbnail } from "shimmer-ui-effect";
 import { Tooltip } from 'react-tooltip';
 import { FaSearch } from 'react-icons/fa';
 import './App.css';
@@ -8,6 +9,7 @@ const searchKeys = ['Animals', 'Mountains', 'Flowers', 'Beaches', 'Cities']
 class App extends Component{
   state = {
     imagesList: [],
+    isLoading: true,
     searchInput: "",
   }
 
@@ -16,7 +18,7 @@ class App extends Component{
   }
 
   onClickSearch = () => {
-    
+    this.setState({isLoading: true})
     this.getAllImages()
   }
 
@@ -34,7 +36,7 @@ class App extends Component{
     const data = await res.json() 
 
     if(res.status === 200){
-      this.setState({imagesList: data}) 
+      this.setState({imagesList: data, isLoading: false}) 
     }
   }
 
@@ -44,7 +46,7 @@ class App extends Component{
   }
 
   render(){
-    const {searchInput, imagesList} = this.state
+    const {searchInput, imagesList, isLoading} = this.state
 
 
     return(
@@ -55,6 +57,18 @@ class App extends Component{
             <span className='search' type='button' onClick={this.onClickSearch}><FaSearch /></span>
           </div>
         </div>
+        {isLoading ? 
+            <>
+            <div className='container'>
+              <ShimmerUIThumbnail height={200} width={350} rounded />
+              <ShimmerUIThumbnail height={200} width={350} rounded />
+              <ShimmerUIThumbnail height={200} width={350} rounded />
+            </div>
+            <div className='container'>
+              <ShimmerUIThumbnail height={200} width={350} rounded />
+              <ShimmerUIThumbnail height={200} width={350} rounded />
+              <ShimmerUIThumbnail height={200} width={350} rounded />
+            </div> </>:
         <div className='center'>
         <div className='images-container'>
                 {searchKeys.map((eachKey, index) => (
@@ -63,7 +77,7 @@ class App extends Component{
                   </button>
                 ))}
         </div>
-        </div>
+        </div>}
         
             <div className='center'>
             <ul className='images-container'>

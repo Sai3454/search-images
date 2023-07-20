@@ -1,8 +1,9 @@
 import {Component} from 'react'
+import { Tooltip } from 'react-tooltip';
 import { FaSearch } from 'react-icons/fa';
 import './App.css';
 
-
+const searchKeys = ['Animals', 'Mountains', 'Flowers', 'Beaches', 'Cities']
 
 class App extends Component{
   state = {
@@ -54,23 +55,43 @@ class App extends Component{
             <span className='search' type='button' onClick={this.onClickSearch}><FaSearch /></span>
           </div>
         </div>
-        
+        <div className='center'>
+        <div className='images-container'>
+                {searchKeys.map((eachKey, index) => (
+                  <button key={index} className='key' onClick={() => this.setState({searchInput: eachKey}, ()=> this.getAllImages())}>
+                    {eachKey}
+                  </button>
+                ))}
+        </div>
+        </div>
         
             <div className='center'>
             <ul className='images-container'>
               {imagesList.map(eachImage => {
                 const {id, urls, description} = eachImage
                 const {small} = urls
-                
+                const tooltipId = `tooltip-${id}`
+
                 return (
                   <li key={eachImage.id}>
                     <img 
                       src={small} 
                       alt="search" 
                       className='image'
-                      
+                      data-tooltip-id={tooltipId}
                     />
+                    <Tooltip
+                      place="right" 
+                      type="info"
+                      effect="solid"
+                      id={tooltipId} 
+                    >
+                      { description !== null && <div className='multi-line'>
+                        {description}
+                      </div>}
+                    </Tooltip>
                   </li>
+                
                 )
               })}
             </ul>
